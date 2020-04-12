@@ -16,28 +16,28 @@ public class Deck {
 		private Card nextCard; // reference to next card in deck
 		
 	
-		// used to pair string type with integer value
-		private int findMatch(String type) {
+		// used to pair string rank with its corresponding integer value
+		private int rankNumericalValue(String rank) {
 			int index = 0;
 			for (int i = 0; i < Deck.cardRanks.length-1; i++) {
-				if (Deck.cardRanks[i] == type) {
+				if (Deck.cardRanks[i] == rank) {
 					index = i;
 				}	
 			}
 			return Deck.values[index];
 		}
 		
-		// recursively, randomly chooses a type of card to add to deck
-		private String randomType() {
+		// recursively, randomly chooses a rank of card to add to deck
+		private String randomRank() {
 			Random typeChoice = new Random();
 			int cardIndex = typeChoice.nextInt(13);
 			
 			String result = Deck.cardRanks[cardIndex]; // return a random number between 0 and 13 (total ranks), amount of all possible value
 			timesAppearedinDeck[cardIndex]++;
 			
-			// if the type of card has appeared  times in the deck, it cannot appear again
+			// if the rank of card has appeared too many times in the deck, it cannot appear again
 			if (timesAppearedinDeck[cardIndex] > MAXSIZE/cardRanks.length) { // number of ranks
-				result = randomType(); // try again with another card
+				result = randomRank(); // recursive call to try again with another card
 				timesAppearedinDeck[cardIndex] = MAXSIZE/cardRanks.length;
 			}
 
@@ -46,43 +46,44 @@ public class Deck {
 		
 		// used to create first card of deck
 		private Card() {
-			this.cardName = randomType();
-			this.value = findMatch(cardName);
+			this.cardName = randomRank();
+			this.value = rankNumericalValue(cardName);
 			this.nextCard = null;
 		}
 		
 		// used to create all other cards in deck
 		private Card(Card below) {
-			this.cardName = randomType();
-			this.value = findMatch(cardName);
+			this.cardName = randomRank();
+			this.value = rankNumericalValue(cardName);
 			this.nextCard = below;
 		}
 	}		
 	
-	// store all possible values and types for cards
+	// store all possible values and ranks for cards
 	private static String[] cardRanks = {"A", "2", "3", "4", "5", "6",
 			"7", "8", "9", "10", "J", "Q", "K"};
 	
 	private static int[] values = {1, 2, 3, 4, 5, 6,
 			7, 8, 9, 10, 10, 10, 10};
 	
-	private static int[] timesAppearedinDeck = new int[13];
+	// keeps track of how many times each rank has appeared in the deck
+	private static int[] timesAppearedinDeck = new int[cardRanks.length];
 	
 	
-	private int length; // length of deck
+	private int deckSize; // size of deck
 	private final int MAXSIZE = 52; // max size of deck, must be a multiple of the number of ranks 
 	private Card pile; // reference to top of deck
 	
 	// create empty deck
 	private Deck() {
 		this.pile = null;
-		this.length = 0;
+		this.deckSize = 0;
 	}
 	
 	// pushes card onto stack 
 	public void addRandomCard() {
 		// check if the deck is maxed out at 52
-		if (this.length+1 > MAXSIZE) {
+		if (this.deckSize+1 > MAXSIZE) {
 			throw new IndexOutOfBoundsException("Max deck size (" + MAXSIZE + ") already reached");
 		}
 		
@@ -95,7 +96,7 @@ public class Deck {
 			Card c = new Card(pile); // create new card, set its reference to the current top of stack
 			pile = c; // reassign top of stack to new card
 		}
-		this.length++;
+		this.deckSize++;
 	}
 	
 	// pops first card off of stack, returns name of the card for later
@@ -103,7 +104,7 @@ public class Deck {
 		Card prev = pile;
 		pile = pile.nextCard;
 		prev.nextCard = null;
-		this.length--;
+		this.deckSize--;
 		return prev.cardName;
 	}
 	
