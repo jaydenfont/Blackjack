@@ -1,5 +1,5 @@
 # Blackjack (Unfinished)
-OOP Implementation of Blackjack in Java
+OOP Implementation of Blackjack in Java (unfinished)
 
 When finished, a human player can play against a computer player following the conventional rules of blackjack.
 
