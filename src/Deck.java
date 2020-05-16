@@ -19,11 +19,16 @@ public class Deck {
 		// used to pair string rank with its corresponding integer value
 		private int rankNumericalValue(String rank) {
 			int index = 0;
-			for (int i = 0; i < Deck.cardRanks.length-1; i++) {
-				if (Deck.cardRanks[i] == rank) {
+			for (int i = 0; i < Deck.cardRanks.length; i++) {
+				System.out.println(Deck.cardRanks[i]);
+				System.out.println("i = " + i);
+				if (Deck.cardRanks[i].equals(rank)) {
 					index = i;
+					System.out.println("index = " + index);
+					break;
 				}	
 			}
+			System.out.println("Values index = " + index);
 			return Deck.values[index];
 		}
 		
@@ -57,7 +62,20 @@ public class Deck {
 			this.value = rankNumericalValue(cardName);
 			this.nextCard = below;
 		}
-	}		
+		
+		// create specific card for testing
+		private Card(String custom) {
+			System.out.println("Enter name of card to make it");
+			Scanner cardPrompt = new Scanner(System.in);
+			String card = cardPrompt.next();
+			
+			this.cardName = card;
+			this.value = rankNumericalValue(cardName);
+			this.nextCard = null;
+			System.out.println("Name = " + cardName);
+			System.out.println("Value = " + value);
+		}
+	}	
 	
 	// store all possible values and ranks for cards
 	private static String[] cardRanks = {"A", "2", "3", "4", "5", "6",
@@ -75,13 +93,18 @@ public class Deck {
 	private Card pile; // reference to top of deck
 	
 	// create empty deck
-	private Deck() {
+	public Deck() {
 		this.pile = null;
 		this.deckSize = 0;
 	}
 	
-	// pushes card onto stack 
-	public void addRandomCard() {
+	public Card createCard() {
+		Card custom = new Card("custom");
+		return custom;
+	}
+	
+	// pushes card onto stack, returns its value
+	public int addRandomCard() {
 		// check if the deck is maxed out at 52
 		if (this.deckSize+1 > MAXSIZE) {
 			throw new IndexOutOfBoundsException("Max deck size (" + MAXSIZE + ") already reached");
@@ -90,24 +113,50 @@ public class Deck {
 		// for first card in deck
 		if (this.pile == null) {
 			this.pile = new Card(); // assign first card to top of stack
+			this.deckSize++;
+			return pile.value;
 		}
 		// for all other cards
 		else {
 			Card c = new Card(pile); // create new card, set its reference to the current top of stack
 			pile = c; // reassign top of stack to new card
+			this.deckSize++;
+			return pile.value;
 		}
-		this.deckSize++;
 	}
 	
-	// pops first card off of stack, returns name of the card for later
-	public String removeCard() {
+	// add card from deck, set to top of hand
+	public int addCard(Card c) {
+		c.nextCard = pile; // set next reference to deck
+		pile = c; // add to top of deck
+		return c.value;
+	}
+	
+	// pops first card off of stack, returns card
+	public Card removeCard() {
 		Card prev = pile;
 		pile = pile.nextCard;
 		prev.nextCard = null;
 		this.deckSize--;
-		return prev.cardName;
+		return prev;
 	}
 	
+	// equivalent to peek, shows name of last card
+	public String showName() {
+		return this.pile.cardName;
+	}
+	
+	public int showValue() {
+		System.out.println("Top card = " + this.pile.cardName);
+		return this.pile.value;
+	}
+	
+	public boolean isEmpty() {
+		if (deckSize == 0) {
+			return true;
+		}
+		return false;
+	}
 	// prints entire deck
 	public String toString() {
 		
@@ -124,6 +173,7 @@ public class Deck {
 	}
 	
 	public static void main(String[] args) {
+		/*
 		// test code
 		Deck d = new Deck();
 		
@@ -137,6 +187,9 @@ public class Deck {
 			System.out.println("removed " + d.removeCard());
 		}
 		System.out.println(d.toString());
+		*/
+		Deck d = new Deck();
+		d.createCard();
 	}
 
 }
