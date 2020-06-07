@@ -27,7 +27,7 @@ public class Player {
 		if (deck.isEmpty()) {
 			return false;
 		}
-		int increment = hand.addCard(deck.removeCard());
+		int increment = hand.addCard(deck.removeCard(), this.currentTotal);
 		this.currentTotal += increment;
 		
 		System.out.println("Dealer has dealt: " + hand.showName());

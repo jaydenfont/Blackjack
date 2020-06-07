@@ -14,21 +14,20 @@ public class Deck {
 		private String cardName; // rank of card
 		private int value; // value of card in game
 		private Card nextCard; // reference to next card in deck
-		
 	
 		// used to pair string rank with its corresponding integer value
 		private int rankNumericalValue(String rank) {
 			int index = 0;
 			for (int i = 0; i < Deck.cardRanks.length; i++) {
-				System.out.println(Deck.cardRanks[i]);
-				System.out.println("i = " + i);
+				// System.out.println(Deck.cardRanks[i]);
+				// System.out.println("i = " + i);
 				if (Deck.cardRanks[i].equals(rank)) {
 					index = i;
-					System.out.println("index = " + index);
+					// System.out.println("index = " + index);
 					break;
 				}	
 			}
-			System.out.println("Values index = " + index);
+			// System.out.println("Values index = " + index);
 			return Deck.values[index];
 		}
 		
@@ -45,21 +44,32 @@ public class Deck {
 				result = randomRank(); // recursive call to try again with another card
 				timesAppearedinDeck[cardIndex] = MAXSIZE/cardRanks.length;
 			}
-
+			
 			return result;
 		}
 		
 		// used to create first card of deck
 		private Card() {
 			this.cardName = randomRank();
-			this.value = rankNumericalValue(cardName);
+			if (cardName == "A") {
+				this.value = 11;
+			}
+			else{
+				this.value = rankNumericalValue(cardName);
+			}
 			this.nextCard = null;
 		}
 		
 		// used to create all other cards in deck
-		private Card(Card below) {
+		private Card(Card below, int currentTotal) {
 			this.cardName = randomRank();
-			this.value = rankNumericalValue(cardName);
+			
+			if(cardName == "A") {
+				this.value = valueChoice(currentTotal);
+			}
+			else {
+				this.value = rankNumericalValue(cardName);
+			}
 			this.nextCard = below;
 		}
 		
@@ -76,7 +86,18 @@ public class Deck {
 			System.out.println("Value = " + value);
 		}
 	}	
+
 	
+	// for defining aces pass player's current total, if 11 would cause bust, return 1 instead
+	public int valueChoice(int currentTotal) {
+		if (currentTotal + 11 > 21) {
+			return 1;
+		}
+		else {
+			return 11;
+		}
+	}
+		
 	// store all possible values and ranks for cards
 	private static String[] cardRanks = {"A", "2", "3", "4", "5", "6",
 			"7", "8", "9", "10", "J", "Q", "K"};
@@ -118,7 +139,7 @@ public class Deck {
 		}
 		// for all other cards
 		else {
-			Card c = new Card(pile); // create new card, set its reference to the current top of stack
+			Card c = new Card(pile, 0); // create new card, set its reference to the current top of stack
 			pile = c; // reassign top of stack to new card
 			this.deckSize++;
 			return pile.value;
@@ -126,9 +147,13 @@ public class Deck {
 	}
 	
 	// add card from deck, set to top of hand
-	public int addCard(Card c) {
+	public int addCard(Card c, int currentTotal) {
 		c.nextCard = pile; // set next reference to deck
 		pile = c; // add to top of deck
+		
+		if (c.cardName == "A") {
+			c.value = valueChoice(currentTotal);
+		}
 		return c.value;
 	}
 	
