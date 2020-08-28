@@ -1,6 +1,10 @@
 # Blackjack 
 OOP Implementation of Blackjack in Java 
 
+Screenshot: Note, the graphics are not functional yet, the game is played in the console
+![First Graphics](https://github.com/jaydenfont/blackjack/blob/master/screenshots/Image%208-28-20%20at%2012.27%20PM.jpg)
+
+
 To play the game, run Game.java
 
 Deck and Cards: 
