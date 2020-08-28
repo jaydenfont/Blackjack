@@ -14,33 +14,31 @@ public class Deck {
 		private String cardName; // rank of card
 		private int value; // value of card in game
 		private Card nextCard; // reference to next card in deck
+		private char suit; // suit
 	
 		// used to pair string rank with its corresponding integer value
 		private int rankNumericalValue(String rank) {
 			int index = 0;
 			for (int i = 0; i < Deck.cardRanks.length; i++) {
-				// System.out.println(Deck.cardRanks[i]);
-				// System.out.println("i = " + i);
 				if (Deck.cardRanks[i].equals(rank)) {
 					index = i;
-					// System.out.println("index = " + index);
 					break;
 				}	
 			}
-			// System.out.println("Values index = " + index);
+
 			return Deck.values[index];
 		}
 		
 		// recursively, randomly chooses a rank of card to add to deck
 		private String randomRank() {
 			Random typeChoice = new Random();
-			int cardIndex = typeChoice.nextInt(13);
+			int cardIndex = typeChoice.nextInt(13); // chooses between 0 and 13
 			
 			String result = Deck.cardRanks[cardIndex]; // return a random number between 0 and 13 (total ranks), amount of all possible value
 			timesAppearedinDeck[cardIndex]++;
 			
 			// if the rank of card has appeared too many times in the deck, it cannot appear again
-			if (timesAppearedinDeck[cardIndex] > MAXSIZE/cardRanks.length) { // number of ranks
+			if (timesAppearedinDeck[cardIndex] > MAXSIZE/cardRanks.length) { // max size/number of ranks = number of max appearances of each rank
 				result = randomRank(); // recursive call to try again with another card
 				timesAppearedinDeck[cardIndex] = MAXSIZE/cardRanks.length;
 			}
@@ -48,7 +46,26 @@ public class Deck {
 			return result;
 		}
 		
-		// used to create first card of deck
+		// generates a random suit for the card
+		// TODO: check if exact suit and number combination has already been made
+		private char randomSuit() {
+			Random suitChoice = new Random();
+			int suitIndex = suitChoice.nextInt(3);
+			char result = suits[suitIndex];
+			return result;
+		}
+		
+		// wrapper for suit
+		public char getRandomSuit() {
+			return randomSuit();
+		}
+		
+		// wrapper for rank
+		public String getRandomRank() {
+			return randomRank();
+		}
+		
+ 		// used to create first card of deck
 		private Card() {
 			this.cardName = randomRank();
 			if (cardName == "A") {
@@ -88,7 +105,7 @@ public class Deck {
 	}	
 
 	
-	// for defining aces pass player's current total, if 11 would cause bust, return 1 instead
+	// for defining aces: pass player's current total, if 11 would cause bust, return 1 instead
 	public int valueChoice(int currentTotal) {
 		if (currentTotal + 11 > 21) {
 			return 1;
@@ -104,6 +121,8 @@ public class Deck {
 	
 	private static int[] values = {1, 2, 3, 4, 5, 6,
 			7, 8, 9, 10, 10, 10, 10};
+	
+	private static char[] suits = {'C', 'D', 'H', 'S'};
 	
 	// keeps track of how many times each rank has appeared in the deck
 	private static int[] timesAppearedinDeck = new int[cardRanks.length];
